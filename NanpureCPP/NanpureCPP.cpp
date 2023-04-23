@@ -42,6 +42,7 @@ int main()
 		cout << "This Nanpure is SYSTE ERROR." << endl;
 		break;
 	}
-
+	calcNanpureAlgo1(&data, 1);
 	return 0;
+
 }

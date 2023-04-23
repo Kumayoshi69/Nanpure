@@ -32,6 +32,7 @@ typedef struct _tag_stNanpureData {
 
 extern int printNanpure(stNanpureData* data);
 extern int checkNanpure(stNanpureData* data);
+extern void calcNanpureAlgo1(stNanpureData* data, int n);
 
 #ifdef __cplusplus
 }

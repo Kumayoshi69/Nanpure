@@ -53,6 +53,7 @@ int printNanpure(stNanpureData* data)
 	return ret;
 }
 
+// 盤面全体がどういう状態かチェックする関数
 enNanpureStatus checkNanpure(stNanpureData* data)
 {
 	enNanpureStatus ret = EN_NANPURE_NO_CHECK;
@@ -129,4 +130,77 @@ enNanpureStatus checkNanpure(stNanpureData* data)
 		ret = EN_NANPURE_NO_BAD;
 	}
 	return ret;
+}
+
+static int isCanSetLine(stNanpureData* data, int n, int y)
+{
+	for (int i = 0; i < SIZE_X; i++)
+	{
+		if (data->num[y][i] == n)
+		{
+			return 0;
+		}
+	}
+	return 1;
+}
+
+static int isCanSetColumn(stNanpureData* data, int n, int x)
+{
+	for (int i = 0; i < SIZE_Y; i++)
+	{
+		if (data->num[i][x] == n)
+		{
+			return 0;
+		}
+	}
+	return 1;
+}
+
+static int isCanSetBox(stNanpureData* data, int n, int x, int y)
+{
+	int x1 = (x / 3) * 3;
+	int y1 = (y / 3) * 3;
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			if (data->num[y1 + i][x1 + i] == n)
+			{
+				return 0;
+			}
+		}
+	}
+	return 1;
+}
+
+static int isCanSetTotal(stNanpureData* data, int n, int x, int y)
+{
+	return isCanSetLine(data, n, y) && isCanSetColumn(data, n, x) && isCanSetBox(data, n, x, y);
+}
+
+void calcNanpureAlgo1(stNanpureData* data, int n)
+{
+	static int s_ptn = 1;
+	if (n == SIZE_X * SIZE_Y)
+	{
+		printf("PATTERN=%d\n", s_ptn++);
+		printNanpure(data);
+	}
+	else
+	{
+		int x = n / SIZE_X;
+		int y = n % SIZE_Y;
+		if (data->num[y][x] != 0)
+			calcNanpureAlgo1(data, n + 1);
+		else {
+			for (int i = 1; i <= NUM_MAX; i++) {
+				if (isCanSetTotal(data, i, x, y)) {
+					data->num[y][x] = i;
+					calcNanpureAlgo1(data, n + 1);
+					data->num[y][x] = 0;
+				}
+			}
+		}
+	}
+	return;
 }
